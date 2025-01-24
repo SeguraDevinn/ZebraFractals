@@ -36,6 +36,9 @@ public class ZebraStripes {
         leftPts = new Vector<Vector<Integer>>();
         rightPts = new Vector<Vector<Integer>>();
 
+        //new code
+        int frameCount = 1;
+
         //Start of Franchesco's
         for (int i = 0; i < width; i += 3 * offset) {
 
@@ -89,6 +92,10 @@ public class ZebraStripes {
 
             // Draw the fourth arc (right arc - up)
             drawFractalArc(g2d, i + 2 * offset, 800, i + 5 * offset / 2, 100, 7, -0.05 + adjust4, right);
+
+            //new code
+            saveFrame(image, frameCount);
+            frameCount++;
         }
 
         for (int j = 0; j < leftPts.size(); j++) {
@@ -103,17 +110,13 @@ public class ZebraStripes {
             x2 = rightPts.elementAt(j).elementAt(2);
             y2 = rightPts.elementAt(j).elementAt(3);
             g2d.drawLine(x1, y1, x2, y2);
+            // new code
+            saveFrame(image, frameCount);
+            frameCount++;
         }
 
 
-        //Save image to PNG
-        try {
-            ImageIO.write(image, "png", new File("ZebraStripes.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
 
-        }
     }
     ////////////////////////////
     ///Function that creates the fractal arcs
@@ -155,6 +158,17 @@ public class ZebraStripes {
             // Recursively draw the two halves
             drawFractalArc(g2d, x1, y1, midX, midY, depth -1, curvature, leftSide);
             drawFractalArc(g2d, midX, midY, x2, y2, depth -1, curvature, leftSide);
+        }
+    }
+
+    //Start of new code
+    public static void saveFrame(BufferedImage image, int frameCount) {
+        try {
+            String fileName = String.format("frame_%03d.png", frameCount);
+            ImageIO.write(image, "png", new File(fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error saving frame ", e);
         }
     }
 
